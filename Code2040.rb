@@ -22,13 +22,19 @@ def reverse (reverseMe)
   return reverseMe.reverse
 end
 
+def indexed (needHay)
+  needle = needHay[1]
+  haystack = needHay[3]
+  return haystack.index(needle)
+end
+
 #Part 1
 info = { token: '47fca5347f70962e6faac4fae4cb75cd',
   github: 'https://github.com/tturn02/CODE2040' }
 
 uri = URI("http://challenge.code2040.org/api/register")
 
-GithubPost(info, uri)
+
 
 
 #Part2
@@ -38,10 +44,15 @@ stringtoReverse = GithubPost(info, uri)
 reversedString = reverse (stringtoReverse)
 info = {token: '47fca5347f70962e6faac4fae4cb75cd', string: reversedString}
 uri = URI("http://challenge.code2040.org/api/reverse/validate")
-puts GithubPost(info, uri)
+
 
 
 #Part3
 info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
 uri = URI("http://challenge.code2040.org/api/haystack")
-dictionary =
+dictionary = GithubPost(info, uri)
+needleHayStackHash = eval(dictionary.gsub(/:/, '=>'))
+index = indexed(needleHayStackHash.flatten)
+info = {token: '47fca5347f70962e6faac4fae4cb75cd', needle: index}
+uri = URI("http://challenge.code2040.org/api/haystack/validate")
+puts GithubPost(info, uri)
