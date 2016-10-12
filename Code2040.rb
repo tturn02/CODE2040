@@ -3,11 +3,14 @@ require 'uri'
 require 'json'
 require 'time'
 
+#Thought that the challenege was fairly simple. Although this project really did give me a chance to learn about how POSTing
+#to an API works and how to go about getting the returned data. I also learned a lot about working with JSON objects which
+#is usful because that's how many API's return data. The library for most of the languages contain ways to do most of the
+#required steps painlessly. Although they all could have been acheieved even without some of the helpful methods.
 def GithubPost (info, uri)
 
 
   header = {'Content-Type' => 'application/json'}
-
 
 # Create the HTTP objects
   http = Net::HTTP.new(uri.host, uri.port)
@@ -17,10 +20,6 @@ def GithubPost (info, uri)
 # Send the request
   response = http.request(request)
   return response.body
-end
-
-def reverse (reverseMe)
-  return reverseMe.reverse
 end
 
 def indexed (needHay)
@@ -47,51 +46,58 @@ def addTime (timeStamp, seconds)
  return timeString
 end
 
-#Part 1
-info = { token: '47fca5347f70962e6faac4fae4cb75cd',
-  github: 'https://github.com/tturn02/CODE2040' }
+def part1()
+  info = { token: '47fca5347f70962e6faac4fae4cb75cd',
+    github: 'https://github.com/tturn02/CODE2040' }
+  uri = URI("http://challenge.code2040.org/api/register")
+  puts GithubPost(info, uri)
+end
 
-uri = URI("http://challenge.code2040.org/api/register")
+def part2()
+  info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
+  uri = URI("http://challenge.code2040.org/api/reverse")
+  stringtoReverse = GithubPost(info, uri)
+  info = {token: '47fca5347f70962e6faac4fae4cb75cd', string: stringtoReverse.reverse}
+  uri = URI("http://challenge.code2040.org/api/reverse/validate")
+  puts GithubPost(info, uri)
+end
 
+def part3()
+  info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
+  uri = URI("http://challenge.code2040.org/api/haystack")
+  needleHayStackHash = JSON.parse(GithubPost(info, uri))
+  index = indexed(needleHayStackHash.flatten)
+  info = {token: '47fca5347f70962e6faac4fae4cb75cd', needle: index}
+  uri = URI("http://challenge.code2040.org/api/haystack/validate")
+  puts GithubPost(info, uri)
+end
 
+def part4()
+  info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
+  uri = URI("http://challenge.code2040.org/api/prefix")
+  prefixHash = JSON.parse(GithubPost(info, uri))
+  pref = prefixHash["prefix"]
+  prefixArray = prefixHash["array"]
+  gone = removePrefix(pref, prefixArray)
+  info = {token: '47fca5347f70962e6faac4fae4cb75cd', array: gone}
+  uri = URI("http://challenge.code2040.org/api/prefix/validate")
+  puts GithubPost(info, uri)
+end
 
+def part5()
+  info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
+  uri = URI("http://challenge.code2040.org/api/dating")
+  timeStampHash = JSON.parse(GithubPost(info, uri))
+  time = timeStampHash["datestamp"]
+  interval = timeStampHash["interval"]
+  addedTime = addTime(time, interval)
+  info = {token: '47fca5347f70962e6faac4fae4cb75cd', datestamp: addedTime}
+  uri = URI("http://challenge.code2040.org/api/dating/validate")
+  puts GithubPost(info, uri)
+end
 
-#Part2
-info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
-uri = URI("http://challenge.code2040.org/api/reverse")
-stringtoReverse = GithubPost(info, uri)
-reversedString = reverse (stringtoReverse)
-info = {token: '47fca5347f70962e6faac4fae4cb75cd', string: reversedString}
-uri = URI("http://challenge.code2040.org/api/reverse/validate")
-
-
-
-#Part3
-info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
-uri = URI("http://challenge.code2040.org/api/haystack")
-needleHayStackHash = JSON.parse(GithubPost(info, uri))
-index = indexed(needleHayStackHash.flatten)
-info = {token: '47fca5347f70962e6faac4fae4cb75cd', needle: index}
-uri = URI("http://challenge.code2040.org/api/haystack/validate")
-
-
-#Part4
-info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
-uri = URI("http://challenge.code2040.org/api/prefix")
-prefixHash = JSON.parse(GithubPost(info, uri))
-pref = prefixHash["prefix"]
-prefixArray = prefixHash["array"]
-gone = removePrefix(pref, prefixArray)
-info = {token: '47fca5347f70962e6faac4fae4cb75cd', array: gone}
-uri = URI("http://challenge.code2040.org/api/prefix/validate")
-
-#Part5
-info = {token: '47fca5347f70962e6faac4fae4cb75cd'}
-uri = URI("http://challenge.code2040.org/api/dating")
-timeStampHash = JSON.parse(GithubPost(info, uri))
-time = timeStampHash["datestamp"]
-interval = timeStampHash["interval"]
-addedTime = addTime(time, interval)
-info = {token: '47fca5347f70962e6faac4fae4cb75cd', datestamp: addedTime}
-uri = URI("http://challenge.code2040.org/api/dating/validate")
-puts GithubPost(info, uri)
+part1()
+part2()
+part3()
+part4()
+part5()
