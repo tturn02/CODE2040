@@ -40,9 +40,11 @@ def removePrefix (prefix, arr)
 end
 
 def addTime (timeStamp, seconds)
- t = Time.parse(timeStamp)
- t + seconds
-
+ time = Time.parse(timeStamp)
+ t = time + seconds
+ timeArray = t.to_s.split(" ")
+ timeString = timeArray[0] + "T" + timeArray[1] + "Z"
+ return timeString
 end
 
 #Part 1
@@ -89,4 +91,7 @@ uri = URI("http://challenge.code2040.org/api/dating")
 timeStampHash = JSON.parse(GithubPost(info, uri))
 time = timeStampHash["datestamp"]
 interval = timeStampHash["interval"]
-addTime(time, interval)
+addedTime = addTime(time, interval)
+info = {token: '47fca5347f70962e6faac4fae4cb75cd', datestamp: addedTime}
+uri = URI("http://challenge.code2040.org/api/dating/validate")
+puts GithubPost(info, uri)
